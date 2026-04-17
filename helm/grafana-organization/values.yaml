@@ -1,0 +1,11 @@
+# Default values for the grafana-organization chart.
+#
+# This chart ships a GrafanaOrganization CR that is reconciled by the
+# observability-operator on the management cluster to provision a Grafana
+# organization, its datasources, and RBAC.
+#
+# CRD reference:
+#   https://docs.giantswarm.io/reference/platform-api/crd/grafanaorganizations.observability.giantswarm.io/
+#
+# To learn more about configuring apps on Giant Swarm, see:
+#   https://docs.giantswarm.io/tutorials/fleet-management/app-platform/app-configuration/

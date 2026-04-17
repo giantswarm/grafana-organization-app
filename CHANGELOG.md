@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- changed: `app.giantswarm.io` label group was changed to `application.giantswarm.io`
+### Added
 
-[Unreleased]: https://github.com/giantswarm/{APP-NAME}/tree/main
+- Scaffold `grafana-organization` Helm chart from the Giant Swarm `template-app`.
+
+[Unreleased]: https://github.com/giantswarm/grafana-organization-app/tree/main

@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@6.10.0
+  architect: giantswarm/architect@6.15.0
 
 workflows:
   package-and-push-chart-on-tag:
@@ -9,9 +9,9 @@ workflows:
         context: architect
         executor: app-build-suite
         name: package-and-push-chart
-        app_catalog: giantswarm-catalog
-        app_catalog_test: giantswarm-test-catalog
-        chart: '{APP-NAME}'
+        app_catalog: giantswarm-operations-platform-catalog
+        app_catalog_test: giantswarm-operations-platform-test-catalog
+        chart: 'grafana-organization'
           # Trigger job on git tag.
         filters:
           tags:
