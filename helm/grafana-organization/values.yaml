@@ -7,5 +7,38 @@
 # CRD reference:
 #   https://docs.giantswarm.io/reference/platform-api/crd/grafanaorganizations.observability.giantswarm.io/
 #
-# To learn more about configuring apps on Giant Swarm, see:
-#   https://docs.giantswarm.io/tutorials/fleet-management/app-platform/app-configuration/
+# Giant-Swarm-owned keys (organizationName, displayName, rbac, tenants, and
+# customer.allowedRoles / customer.configMapName) are always pinned via spec.values
+# in the HelmRelease so that lower-priority layers cannot override them. Customer
+# identity-group contributions are NOT supplied via values; they are loaded at
+# render time from a ConfigMap in the release namespace using Helm's `lookup`
+# function. See customer.configMapName below.
+
+# Optional override for the GrafanaOrganization's metadata.name.
+# Empty string means "use the Helm release name".
+organizationName: ""
+
+# Human-readable name shown in the Grafana UI.
+displayName: "Application Telemetry"
+
+rbac:
+  admins: []
+    # - "customer:org-admin-group"
+  editors: []
+  viewers: []
+
+# Tenants associated with this Grafana organization.
+tenants: {}
+  # - name: app-team-data-tenant
+  #   types:
+  #     - data
+  #     - alerting
+
+customer:
+  # List of role names the customer is allowed to contribute members to.
+  # Valid values: "admins", "editors", "viewers". Empty list means GS-only.
+  allowedRoles: []
+
+  # Optional override for the ConfigMap from which the chart reads customer identity-group contributions.
+  # Default is "<organizationName (or release name)>-customer-groups".
+  configMapName: ""
