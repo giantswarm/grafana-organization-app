@@ -7,5 +7,42 @@
 # CRD reference:
 #   https://docs.giantswarm.io/reference/platform-api/crd/grafanaorganizations.observability.giantswarm.io/
 #
-# To learn more about configuring apps on Giant Swarm, see:
-#   https://docs.giantswarm.io/tutorials/fleet-management/app-platform/app-configuration/
+# The Giant-Swarm-owned keys (organizationName, displayName, rbac, tenants, customer.allowedRoles)
+# are always pinned via spec.values in the HelmRelease so that customer-supplied values at a
+# lower-priority valuesFrom layer cannot override them. Only customer.rbac.* is intended to
+# be set by customers, and only for roles listed in customer.allowedRoles.
+
+# This chart assumes Giant Swarm will ship a default set of admins, editors, and viewers.
+# Customers can add their own admins, editors, and viewers via a ConfigMap referenced in the HelmRelease.
+# The ConfigMap should be created in the same namespace as the HelmRelease and have lower
+
+# Optional override for the GrafanaOrganization's metadata.name.
+# Empty string means "use the Helm release name".
+organizationName: ""
+
+# Human-readable name shown in the Grafana UI.
+displayName: "Security"
+
+rbac:
+  admins: []
+    # - "customer:org-admin-group"
+  editors: []
+  viewers: []
+
+# Tenants associated with this Grafana organization.
+tenants: {}
+  # - name: security
+  #   types:
+  #     - data
+  #     - alerting
+
+customer:
+  # List of role names the customer is allowed to contribute members to.
+  # Valid values: "admins", "editors", "viewers".
+  allowedRoles: []
+
+  # Customer-owned RBAC group mappings.
+  rbac:
+    admins: []
+    editors: []
+    viewers: []

@@ -1,0 +1,50 @@
+{{/*
+  Render the GrafanaOrganization CR.
+
+  Customer contributions to rbac.{admins,editors,viewers} are honored only for
+  roles explicitly listed in .Values.customer.allowedRoles. Disallowed
+  contributions are dropped from the rendered CR and exposed via the
+  "grafana-organization-app.giantswarm.io/warnings" annotation.
+*/}}
+{{- $allowed := .Values.customer.allowedRoles | default list -}}
+{{- $warnings := list -}}
+
+{{- range $role := (list "admins" "editors" "viewers") }}
+  {{- $value := index $.Values.customer.rbac $role }}
+  {{- if and (not (has $role $allowed)) (not (empty (default list $value))) }}
+    {{- $warnings = append $warnings (printf
+        "customer.rbac.%s contains %d entr%s but %q is not in customer.allowedRoles %v; the entries were ignored"
+        $role (len $value) (ternary "y" "ies" (eq (len $value) 1)) $role $allowed) }}
+  {{- end }}
+{{- end }}
+
+{{- $customerAdmins  := list -}}
+{{- $customerEditors := list -}}
+{{- $customerViewers := list -}}
+{{- with .Values.customer.rbac }}
+  {{- if and (has "admins"  $allowed) (kindIs "slice" .admins)  }}{{- $customerAdmins  = .admins  -}}{{- end }}
+  {{- if and (has "editors" $allowed) (kindIs "slice" .editors) }}{{- $customerEditors = .editors -}}{{- end }}
+  {{- if and (has "viewers" $allowed) (kindIs "slice" .viewers) }}{{- $customerViewers = .viewers -}}{{- end }}
+{{- end }}
+---
+apiVersion: observability.giantswarm.io/v1alpha2
+kind: GrafanaOrganization
+metadata:
+  name: {{ .Values.organizationName | default .Release.Name | quote }}
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+  {{- if $warnings }}
+  annotations:
+    grafana-organization-app.giantswarm.io/warnings: {{ $warnings | toJson | quote }}
+  {{- end }}
+spec:
+  displayName: {{ .Values.displayName | quote }}
+  rbac:
+    admins:
+      {{- concat .Values.rbac.admins  $customerAdmins  | uniq | toYaml | nindent 6 }}
+    editors:
+      {{- concat .Values.rbac.editors $customerEditors | uniq | toYaml | nindent 6 }}
+    viewers:
+      {{- concat .Values.rbac.viewers $customerViewers | uniq | toYaml | nindent 6 }}
+  tenants:
+    {{- .Values.tenants | toYaml | nindent 4 }}

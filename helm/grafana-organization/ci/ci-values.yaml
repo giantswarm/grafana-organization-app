@@ -1,0 +1,24 @@
+# Simulates GS + customer shared config for a GrafanaOrganization CR.
+organizationName: "security-test"
+displayName: "Security Test"
+rbac:
+  admins:
+    - "giantswarm:security-admins"
+  editors:
+    - "giantswarm:security-editors"
+  viewers:
+    - "giantswarm:security-viewers"
+tenants:
+  - name: security-test
+    types:
+      - data
+      - alerting
+customer:
+  allowedRoles:
+    - "viewers"
+  rbac:
+    admins: []
+    editors: []
+    viewers:
+      - "customer:platform-admins"
+      - "customer:sre-oncall"
