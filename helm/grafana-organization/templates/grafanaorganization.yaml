@@ -1,36 +1,95 @@
 {{/*
   Render the GrafanaOrganization CR.
 
-  Customer contributions to rbac.{admins,editors,viewers} are honored only for
-  roles explicitly listed in .Values.customer.allowedRoles. Disallowed
-  contributions are dropped from the rendered CR and exposed via the
-  "grafana-organization-app.giantswarm.io/warnings" annotation.
+  Customer identity group contributions are loaded from a ConfigMap in the release namespace.
+
+  The ConfigMap's data.groups field is parsed as YAML and expected to be a
+  map with "admins", "editors", and/or "viewers" keys, whose values are lists
+  of "connector:group" identity strings. Per-entry validation is performed
+  here (schema validation does not apply to looked-up state):
+
+    - kind:     entry must be a YAML string
+    - length:   max 95 characters per entry
+    - pattern:  ^[a-z0-9][a-z0-9-]{0,30}:[a-z0-9][a-z0-9._-]{0,62}$
+    - count:    max 50 entries per role (excess truncated)
+
+  Entries for a role not in .Values.customer.allowedRoles are dropped
+  entirely; the gate is a hard boundary enforced per-role.
+
+  Warnings for invalid or disallowed contributions are exposed through the
+  "grafana-organization-app.giantswarm.io/warnings" annotation on the CR.
 */}}
-{{- $allowed := .Values.customer.allowedRoles | default list -}}
-{{- $warnings := list -}}
 
-{{- range $role := (list "admins" "editors" "viewers") }}
-  {{- $value := index $.Values.customer.rbac $role }}
-  {{- if and (not (has $role $allowed)) (not (empty (default list $value))) }}
-    {{- $warnings = append $warnings (printf
-        "customer.rbac.%s contains %d entr%s but %q is not in customer.allowedRoles %v; the entries were ignored"
-        $role (len $value) (ternary "y" "ies" (eq (len $value) 1)) $role $allowed) }}
-  {{- end }}
-{{- end }}
-
+{{- $orgName     := .Values.organizationName | default .Release.Name -}}
+{{- $defaultCM   := printf "%s-customer-groups" $orgName -}}
+{{- $cmName      := .Values.customer.configMapName | default $defaultCM -}}
+{{- $allowed     := .Values.customer.allowedRoles  | default list -}}
+{{- $pattern     := `^[a-z0-9][a-z0-9-]{0,30}:[a-z0-9][a-z0-9._-]{0,62}$` -}}
+{{- $warnings    := list -}}
 {{- $customerAdmins  := list -}}
 {{- $customerEditors := list -}}
 {{- $customerViewers := list -}}
-{{- with .Values.customer.rbac }}
-  {{- if and (has "admins"  $allowed) (kindIs "slice" .admins)  }}{{- $customerAdmins  = .admins  -}}{{- end }}
-  {{- if and (has "editors" $allowed) (kindIs "slice" .editors) }}{{- $customerEditors = .editors -}}{{- end }}
-  {{- if and (has "viewers" $allowed) (kindIs "slice" .viewers) }}{{- $customerViewers = .viewers -}}{{- end }}
+
+{{- /* Look up and parse the customer ConfigMap. */ -}}
+{{- $payload := dict -}}
+{{- $cm      := lookup "v1" "ConfigMap" .Release.Namespace $cmName -}}
+{{- if and $cm $cm.data }}
+  {{- $raw := $cm.data.groups | default "" -}}
+  {{- if $raw }}
+    {{- $parsed := fromYaml $raw -}}
+    {{- if kindIs "map" $parsed }}
+      {{- $payload = $parsed -}}
+    {{- else }}
+      {{- $warnings = append $warnings (printf
+          "ConfigMap %q: data.groups did not parse as a YAML map; contents ignored"
+          $cmName) -}}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- /* Per-role gate + per-entry validation. */ -}}
+{{- range $role := (list "admins" "editors" "viewers") }}
+  {{- $raw := index $payload $role -}}
+  {{- if kindIs "slice" $raw }}
+    {{- if and (gt (len $raw) 0) (not (has $role $allowed)) }}
+      {{- $warnings = append $warnings (printf
+          "ConfigMap %q: %d entr%s under %q not honored because %q is not in customer.allowedRoles %v"
+          $cmName (len $raw) (ternary "y" "ies" (eq (len $raw) 1)) $role $role $allowed) -}}
+    {{- else if has $role $allowed }}
+      {{- $valid := list -}}
+      {{- $dropped := 0 -}}
+      {{- range $g := $raw }}
+        {{- if and (kindIs "string" $g) (le (len $g) 95) (regexMatch $pattern $g) }}
+          {{- $valid = append $valid $g -}}
+        {{- else }}
+          {{- $dropped = add1 $dropped -}}
+        {{- end }}
+      {{- end }}
+      {{- if gt $dropped 0 }}
+        {{- $warnings = append $warnings (printf
+            "ConfigMap %q: dropped %d malformed entr%s from %q"
+            $cmName $dropped (ternary "y" "ies" (eq $dropped 1)) $role) -}}
+      {{- end }}
+      {{- if gt (len $valid) 50 }}
+        {{- $warnings = append $warnings (printf
+            "ConfigMap %q: %q capped to 50 entries (had %d)"
+            $cmName $role (len $valid)) -}}
+        {{- $valid = slice $valid 0 50 -}}
+      {{- end }}
+      {{- if eq $role "admins"  }}{{- $customerAdmins  = $valid -}}{{- end }}
+      {{- if eq $role "editors" }}{{- $customerEditors = $valid -}}{{- end }}
+      {{- if eq $role "viewers" }}{{- $customerViewers = $valid -}}{{- end }}
+    {{- end }}
+  {{- else if not (kindIs "invalid" $raw) }}
+    {{- $warnings = append $warnings (printf
+        "ConfigMap %q: data.groups.%s is not a list; ignored" $cmName $role) -}}
+  {{- end }}
 {{- end }}
 ---
 apiVersion: observability.giantswarm.io/v1alpha2
 kind: GrafanaOrganization
 metadata:
-  name: {{ .Values.organizationName | default .Release.Name | quote }}
+  name: {{ $orgName | quote }}
   labels:
     {{- include "labels.common" . | nindent 4 }}
   {{- if $warnings }}

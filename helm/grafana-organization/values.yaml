@@ -7,21 +7,19 @@
 # CRD reference:
 #   https://docs.giantswarm.io/reference/platform-api/crd/grafanaorganizations.observability.giantswarm.io/
 #
-# The Giant-Swarm-owned keys (organizationName, displayName, rbac, tenants, customer.allowedRoles)
-# are always pinned via spec.values in the HelmRelease so that customer-supplied values at a
-# lower-priority valuesFrom layer cannot override them. Only customer.rbac.* is intended to
-# be set by customers, and only for roles listed in customer.allowedRoles.
-
-# This chart assumes Giant Swarm will ship a default set of admins, editors, and viewers.
-# Customers can add their own admins, editors, and viewers via a ConfigMap referenced in the HelmRelease.
-# The ConfigMap should be created in the same namespace as the HelmRelease and have lower
+# Giant-Swarm-owned keys (organizationName, displayName, rbac, tenants, and
+# customer.allowedRoles / customer.configMapName) are always pinned via spec.values
+# in the HelmRelease so that lower-priority layers cannot override them. Customer
+# identity-group contributions are NOT supplied via values; they are loaded at
+# render time from a ConfigMap in the release namespace using Helm's `lookup`
+# function. See customer.configMapName below.
 
 # Optional override for the GrafanaOrganization's metadata.name.
 # Empty string means "use the Helm release name".
 organizationName: ""
 
 # Human-readable name shown in the Grafana UI.
-displayName: "Security"
+displayName: "Application Telemetry"
 
 rbac:
   admins: []
@@ -31,18 +29,16 @@ rbac:
 
 # Tenants associated with this Grafana organization.
 tenants: {}
-  # - name: security
+  # - name: app-team-data-tenant
   #   types:
   #     - data
   #     - alerting
 
 customer:
   # List of role names the customer is allowed to contribute members to.
-  # Valid values: "admins", "editors", "viewers".
+  # Valid values: "admins", "editors", "viewers". Empty list means GS-only.
   allowedRoles: []
 
-  # Customer-owned RBAC group mappings.
-  rbac:
-    admins: []
-    editors: []
-    viewers: []
+  # Optional override for the ConfigMap from which the chart reads customer identity-group contributions.
+  # Default is "<organizationName (or release name)>-customer-groups".
+  configMapName: ""

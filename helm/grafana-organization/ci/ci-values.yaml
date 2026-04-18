@@ -13,12 +13,7 @@ tenants:
     types:
       - data
       - alerting
+# Customer config is loaded from the cluster.
 customer:
   allowedRoles:
     - "viewers"
-  rbac:
-    admins: []
-    editors: []
-    viewers:
-      - "customer:platform-admins"
-      - "customer:sre-oncall"
