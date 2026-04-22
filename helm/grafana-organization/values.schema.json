@@ -57,7 +57,7 @@
     },
     "tenants": {
       "type": "array",
-      "minItems": 0,
+      "minItems": 1,
       "maxItems": 10,
       "items": {
         "type": "object",

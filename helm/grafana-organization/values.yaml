@@ -29,6 +29,9 @@ rbac:
 
 # Tenants associated with this Grafana organization.
 tenants: []
+  - name: giantswarm-security-default
+    types:
+      - data
   # - name: app-team-data-tenant
   #   types:
   #     - data
