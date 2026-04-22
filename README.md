@@ -100,5 +100,6 @@ Requires the `GrafanaOrganization` CRD to be installed on the target management 
 
 ## See also
 
-- [observability-operator](https://github.com/giantswarm/observability-operator) – reconciles the `GrafanaOrganization` CR.
-- [Giant Swarm Observability multi-tenancy](https://docs.giantswarm.io/overview/observability/configuration/multi-tenancy/) documentation.
+- [observability-operator](https://github.com/giantswarm/observability-operator) – reconciles the `GrafanaOrganization` CR
+- [Giant Swarm Observability multi-tenancy](https://docs.giantswarm.io/overview/observability/configuration/multi-tenancy/) documentation
+- [Creating a Grafana organization](https://docs.giantswarm.io/overview/observability/configuration/multi-tenancy/creating-grafana-organization/)
