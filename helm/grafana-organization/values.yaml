@@ -22,7 +22,8 @@ organizationName: ""
 displayName: "Giant Swarm Security"
 
 rbac:
-  admins: []
+  admins:
+    - "giantswarm-ad:giantswarm-admins"
     # - "customer:org-admin-group"
   editors: []
   viewers: []
