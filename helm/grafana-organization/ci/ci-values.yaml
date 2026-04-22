@@ -1,5 +1,5 @@
 # Simulates GS + customer shared config for a GrafanaOrganization CR.
-organizationName: "security-test"
+organizationName: "security_test"
 displayName: "Security Test"
 rbac:
   admins:
