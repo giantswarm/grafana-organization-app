@@ -28,7 +28,7 @@ rbac:
   viewers: []
 
 # Tenants associated with this Grafana organization.
-tenants: {}
+tenants: []
   # - name: app-team-data-tenant
   #   types:
   #     - data

@@ -21,7 +21,7 @@
       "properties": {
         "admins": {
           "type": "array",
-          "minItems": 1,
+          "minItems": 0,
           "maxItems": 50,
           "uniqueItems": true,
           "items": {
