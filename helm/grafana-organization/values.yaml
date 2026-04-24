@@ -19,20 +19,18 @@
 organizationName: ""
 
 # Human-readable name shown in the Grafana UI.
-displayName: "Giant Swarm Security"
+displayName: ""
 
 rbac:
-  admins:
-    - "giantswarm-ad:giantswarm-admins"
-    # - "customer:org-admin-group"
+  admins: []
+    # - "customer-name:org-admin-group"
   editors: []
   viewers: []
 
 # Tenants associated with this Grafana organization.
 tenants:
-  - name: giantswarm_security_default
-    types:
-      - data
+  - name: ""
+    types: []
   # - name: app-team-data-tenant
   #   types:
   #     - data
