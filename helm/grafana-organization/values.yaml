@@ -19,17 +19,17 @@
 organizationName: ""
 
 # Human-readable name shown in the Grafana UI.
-displayName: "Application Telemetry"
+displayName: ""
 
 rbac:
   admins: []
-    # - "customer:org-admin-group"
+    # - "customer-name:org-admin-group"
   editors: []
   viewers: []
 
 # Tenants associated with this Grafana organization.
-tenants: {}
-  # - name: app-team-data-tenant
+tenants: []
+  # - name: app_team_data_tenant
   #   types:
   #     - data
   #     - alerting

@@ -21,7 +21,7 @@
       "properties": {
         "admins": {
           "type": "array",
-          "minItems": 1,
+          "minItems": 0,
           "maxItems": 50,
           "uniqueItems": true,
           "items": {
@@ -68,7 +68,7 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 63,
-            "pattern": "^[a-z][a-z0-9-]{0,62}$"
+            "pattern": "^[a-zA-Z_][a-zA-Z0-9_]{0,149}$"
           },
           "types": {
             "type": "array",
