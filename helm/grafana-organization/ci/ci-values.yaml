@@ -9,7 +9,7 @@ rbac:
   viewers:
     - "giantswarm:security-viewers"
 tenants:
-  - name: security-test
+  - name: security_test
     types:
       - data
       - alerting
