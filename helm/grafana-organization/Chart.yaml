@@ -2,14 +2,13 @@
 # for details and background.
 
 apiVersion: v2
-appVersion: 0.0.1
 name: grafana-organization
 description: Giant Swarm Observability Platform GrafanaOrganization CR.
 home: https://github.com/giantswarm/grafana-organization-app
 icon: https://s.giantswarm.io/app-icons/grafana/1/light.svg
 sources:
   - https://github.com/giantswarm/grafana-organization-app
-version: 0.0.0-dev
+version: 0.0.1
 annotations:
   io.giantswarm.application.audience: giantswarm
   io.giantswarm.application.managed: "true"
