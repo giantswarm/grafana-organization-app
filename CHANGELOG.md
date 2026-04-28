@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.1] - 2026-04-28
+
 ### Added
 
 - Scaffold `grafana-organization` Helm chart from the Giant Swarm `template-app`.
 - Add initial implementation of GrafanaOrganization CR management.
 
-[Unreleased]: https://github.com/giantswarm/grafana-organization-app/tree/main
+[Unreleased]: https://github.com/giantswarm/grafana-organization-app/compare/v0.0.1...HEAD
+[0.0.1]: https://github.com/giantswarm/grafana-organization-app/releases/tag/v0.0.1
