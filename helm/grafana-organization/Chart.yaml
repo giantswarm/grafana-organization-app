@@ -2,7 +2,6 @@
 # for details and background.
 
 apiVersion: v2
-appVersion: 0.0.1
 name: grafana-organization
 description: Giant Swarm Observability Platform GrafanaOrganization CR.
 home: https://github.com/giantswarm/grafana-organization-app
