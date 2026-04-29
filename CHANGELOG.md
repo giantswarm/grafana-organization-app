@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Fix label format when injecting chart version.
+
 ## [0.0.1] - 2026-04-28
 
 ### Added
