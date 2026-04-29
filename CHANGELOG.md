@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.2] - 2026-04-29
+
 ### Changed
 
 - Fix label format when injecting chart version.
@@ -18,5 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scaffold `grafana-organization` Helm chart from the Giant Swarm `template-app`.
 - Add initial implementation of GrafanaOrganization CR management.
 
-[Unreleased]: https://github.com/giantswarm/grafana-organization-app/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/giantswarm/grafana-organization-app/compare/v0.0.2...HEAD
+[0.0.2]: https://github.com/giantswarm/grafana-organization-app/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/giantswarm/grafana-organization-app/releases/tag/v0.0.1
