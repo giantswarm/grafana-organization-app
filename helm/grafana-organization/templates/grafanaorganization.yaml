@@ -9,8 +9,8 @@
   here (schema validation does not apply to looked-up state):
 
     - kind:     entry must be a YAML string
-    - length:   max 95 characters per entry
-    - pattern:  ^[a-z0-9][a-z0-9-]{0,30}:[a-z0-9][a-z0-9._-]{0,62}$
+    - length:   max 159 characters per entry
+    - pattern:  ^\*$|^[a-z0-9][a-z0-9-]{0,30}:[a-z0-9][a-z0-9._-]{0,62}(:[a-z0-9][a-z0-9._-]{0,62})?$
     - count:    max 50 entries per role (excess truncated)
 
   Entries for a role not in .Values.customer.allowedRoles are dropped
@@ -24,7 +24,7 @@
 {{- $defaultCM   := printf "%s-customer-groups" $orgName -}}
 {{- $cmName      := .Values.customer.configMapName | default $defaultCM -}}
 {{- $allowed     := .Values.customer.allowedRoles  | default list -}}
-{{- $pattern     := `^[a-z0-9][a-z0-9-]{0,30}:[a-z0-9][a-z0-9._-]{0,62}$` -}}
+{{- $pattern     := `^\*$|^[a-z0-9][a-z0-9-]{0,30}:[a-z0-9][a-z0-9._-]{0,62}(:[a-z0-9][a-z0-9._-]{0,62})?$` -}}
 {{- $warnings    := list -}}
 {{- $customerAdmins  := list -}}
 {{- $customerEditors := list -}}
@@ -59,7 +59,7 @@
       {{- $valid := list -}}
       {{- $dropped := 0 -}}
       {{- range $g := $raw }}
-        {{- if and (kindIs "string" $g) (le (len $g) 95) (regexMatch $pattern $g) }}
+        {{- if and (kindIs "string" $g) (le (len $g) 159) (regexMatch $pattern $g) }}
           {{- $valid = append $valid $g -}}
         {{- else }}
           {{- $dropped = add1 $dropped -}}
