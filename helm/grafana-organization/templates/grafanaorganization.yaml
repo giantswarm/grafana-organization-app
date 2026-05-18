@@ -92,9 +92,14 @@ metadata:
   name: {{ $orgName | quote }}
   labels:
     {{- include "labels.common" . | nindent 4 }}
-  {{- if $warnings }}
+  {{- if or .Values.annotations $warnings }}
   annotations:
+    {{- with .Values.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- if $warnings }}
     grafana-organization-app.giantswarm.io/warnings: {{ $warnings | toJson | quote }}
+    {{- end }}
   {{- end }}
 spec:
   displayName: {{ .Values.displayName | quote }}
