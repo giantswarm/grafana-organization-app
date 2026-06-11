@@ -4,6 +4,10 @@
   "additionalProperties": false,
   "required": ["displayName", "rbac", "tenants", "customer"],
   "properties": {
+    "annotations": {
+      "type": "object",
+      "additionalProperties": true
+    },
     "organizationName": {
       "type": "string",
       "maxLength": 63,
