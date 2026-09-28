@@ -3,5 +3,4 @@ generate-metadata: true
 chart-dir: ./helm/grafana-organization
 destination: ./build
 # The chart does not render with its default values alone (the schema requires displayName and tenants).
-helm-template-extra-values:
-  - ./helm/grafana-organization/ci/ci-values.yaml
+helm-template-extra-values: [./helm/grafana-organization/ci/ci-values.yaml]
